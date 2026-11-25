@@ -1,45 +1,37 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React from 'react';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { RealmProvider } from '@realm/react';
+import { Task } from './src/database/models/Task';
+import HomeScreen from './src/screens/HomeScreen';
+import styled from 'styled-components/native';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+const DatabaseLoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f7fb;
+`;
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+const DatabaseLoadingText = styled.Text`
+  margin-top: 12px;
+  color: #777e8b;
+`;
 
+function DatabaseLoading() {
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+    <DatabaseLoadingContainer>
+      <ActivityIndicator size="large" color="#635BEE" />
+      <DatabaseLoadingText style={{ marginTop: 12, color: '#777E8B' }}>
+        Opening local database...
+      </DatabaseLoadingText>
+    </DatabaseLoadingContainer>
   );
 }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
+export default function App() {
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
+    <RealmProvider schema={[Task]} schemaVersion={1} fallback={DatabaseLoading}>
+      <HomeScreen />
+    </RealmProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
